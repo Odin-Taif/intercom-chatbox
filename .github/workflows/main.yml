@@ -77,6 +77,6 @@ jobs:
             docker image prune -af --filter "until=24h"
 
             # Run the new container with environment variables
-            docker run -d -p 3001:3001 --name intercome-chatbox \
+            docker run -p 3001:3001 --name tsx-container intercome-chatbox \
               mjdthif/intercome-chatbox
           EOF
