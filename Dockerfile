@@ -19,7 +19,7 @@ RUN npm install -g tsx && npm install
 # # # Generate any Drizzle configuration (if needed)
 # RUN npx drizzle-kit generate 
 # Build the TypeScript code
-RUN npm run build
+# RUN npm run build
 
 # Expose the port your app will run on
 EXPOSE 3001
