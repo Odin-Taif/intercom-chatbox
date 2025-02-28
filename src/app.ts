@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import path from "path";
 import { fileURLToPath } from "url";
-import { finalCanvas, initialCanvas } from "./intercomt-config";
+import { finalCanvas, initialCanvas } from "./intercomt-config.js";
 export function createApp() {
   const app = express();
 
