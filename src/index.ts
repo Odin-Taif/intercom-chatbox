@@ -1,4 +1,5 @@
 import { createApp } from "./app";
-createApp().listen(3000, "0.0.0.0", () => {
+
+createApp().listen(3000, "localhost", () => {
   console.log(`Server started on http://localhost:3000.`);
 });
