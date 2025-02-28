@@ -1,0 +1,84 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code from the GitHub repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Build the Node.js application
+      - name: Build application
+        run: npm run build
+
+      # Step 5: Build Docker image
+      - name: Build Docker image
+        run: docker build -t mjdthif/intercome-chatbox .
+
+      # Step 6: Log in to DockerHub
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # Step 7: Push Docker image to DockerHub
+      - name: Push Docker image to DockerHub
+        run: docker push mjdthif/intercome-chatbox
+
+      # Step 8: Install sshpass (for non-interactive SSH password login)
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      # Step 9: Add the remote server to the SSH known_hosts to prevent host verification prompts
+      - name: Add remote server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 85.224.19.240 >> ~/.ssh/known_hosts
+
+      # Step 10: Test SSH connection to the remote server
+      - name: Test SSH Connection
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no odin@85.224.19.240 "echo SSH connection successful"
+
+      # Step 11: Deploy the Docker container to the remote server
+      - name: Deploy to Webmin Server
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no odin@85.224.19.240 << 'EOF'
+            # Pull the latest Docker image from DockerHub
+            docker pull mjdthif/intercome-chatbox
+
+            # Check if the container exists and stop/remove it if it does
+            if [ "$(docker ps -q -f name=intercome-chatbox)" ]; then
+              docker stop intercome-chatbox
+            fi
+            if [ "$(docker ps -aq -f name=intercome-chatbox)" ]; then
+              docker rm intercome-chatbox
+            fi
+
+            # Remove old Docker images (optional: keeps the system clean)
+            docker image prune -af --filter "until=24h"
+
+            # Run the new container with environment variables
+            docker run -d -p 3001:3001 --name intercome-chatbox \
+              -e EMAIL_USER="${{ secrets.EMAIL_USER }}" \
+              -e EMAIL_PASS="${{ secrets.EMAIL_PASS }}" \
+              mjdthif/intercome-chatbox
+          EOF
