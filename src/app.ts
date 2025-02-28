@@ -16,12 +16,12 @@ export function createApp() {
   app.use(express.static("public"));
   app.use(express.static(path.join(__dirname)));
 
-  app.get("/status", (req, res) => {
+  app.get("/", (req, res) => {
     res.json({ status: "ready" });
   });
-  app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
-  });
+  // app.get("/", (req, res) => {
+  //   res.sendFile(path.join(__dirname, "index.html"));
+  // });
   app.post("/initialize", (request, response) => {
     response.send(initialCanvas);
   });
