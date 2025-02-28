@@ -78,6 +78,4 @@ jobs:
 
             # Run the new container with environment variables
             docker run -d -p 3001:3001 --name intercome-chatbox \
-
-              mjdthif/intercome-chatbox
           EOF
