@@ -29,4 +29,4 @@ EXPOSE 3001
 # Command to run the application in production
 # CMD ["npm", "start"]
 
-CMD ["tsx", "src/index.ts"]
+CMD ["npx", "tsx", "src/index.ts"]
