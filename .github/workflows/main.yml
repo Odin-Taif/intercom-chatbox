@@ -78,7 +78,3 @@ jobs:
 
             # Run the new container with environment variables
             docker run -d -p 3001:3001 --name intercome-chatbox \
-              -e EMAIL_USER="${{ secrets.EMAIL_USER }}" \
-              -e EMAIL_PASS="${{ secrets.EMAIL_PASS }}" \
-              mjdthif/intercome-chatbox
-          EOF
