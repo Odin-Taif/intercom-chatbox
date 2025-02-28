@@ -8,11 +8,13 @@ WORKDIR /src
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install app dependencies
-RUN npm install
+# Copy package.json and package-lock.json first (for efficient caching)
+COPY package.json package-lock.json ./
 
-# Copy the rest of the application code
-COPY . .
+# Install dependencies, including tsx
+RUN npm install -g tsx && npm install
+# # Copy the rest of the application code
+# COPY . .
 
 # # # Generate any Drizzle configuration (if needed)
 # RUN npx drizzle-kit generate 
@@ -25,4 +27,6 @@ EXPOSE 3001
 
 
 # Command to run the application in production
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
+
+CMD ["tsx", "src/index.ts"]
