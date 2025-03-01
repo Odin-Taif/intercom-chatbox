@@ -16,6 +16,14 @@ export function createApp() {
   app.use(express.static("public"));
   app.use(express.static(path.join(__dirname)));
 
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(express.static("public"));
+  app.use(express.static(path.join(__dirname)));
+  app.use(express.json());
+
+  // Middleware to parse form data
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.get("/", (req, res) => {
     res.json({ status: "ready" });
   });

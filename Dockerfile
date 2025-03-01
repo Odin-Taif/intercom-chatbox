@@ -14,7 +14,6 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-
 RUN npm run build
 
 # Expose the port your app will run on
