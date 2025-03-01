@@ -16,7 +16,7 @@ COPY . .
 #build the app
 RUN npm run build
 
-RUN cp /src/index.html /src/dist/
+RUN mv /src/index.html /src/dist/ || true
 
 # Expose the port your app will run on
 EXPOSE 3001
